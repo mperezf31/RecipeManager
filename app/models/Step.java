@@ -1,19 +1,15 @@
 package models;
 
-import io.ebean.Finder;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Step extends ModelBase {
 
-    private static final Finder<Long, Step> find=new Finder<>(Step.class);
-
     private String description;
+
+    @ManyToOne
+    public Recipe recipe;
 
     Step(String description) {
         this.description = description;

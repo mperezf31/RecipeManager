@@ -8,10 +8,10 @@ import java.util.Set;
 @Entity
 public class Ingredient extends ModelBase {
 
-    @ManyToMany(mappedBy = "ingredients")
-    public Set<Recipe> recipes;
-
     private String name;
+
+    @ManyToMany(mappedBy = "ingredients")
+    private Set<Recipe> recipes;
 
     Ingredient(String name) {
         this.name = name;

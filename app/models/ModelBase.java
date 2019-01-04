@@ -24,7 +24,6 @@ public class ModelBase extends Model {
     @UpdatedTimestamp
     private Timestamp whenUpdated;
 
-    // getters & setters
     public Long getId() {
         return id;
     }

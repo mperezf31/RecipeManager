@@ -2,22 +2,26 @@ package models;
 
 import io.ebean.Finder;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class Recipe extends ModelBase {
 
-    private static final Finder<Long,Recipe> find=new Finder<>(Recipe.class);
+    private static final Finder<Long, Recipe> find = new Finder<>(Recipe.class);
+
+    private String title;
+    private String description;
 
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Ingredient> ingredients = new ArrayList<>();
 
-    private String title;
-    private String description;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
+    private List<Step> steps;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private NutritionalData nutritionalData;
 
     Recipe(String title, String description) {
         this.title = title;
@@ -36,6 +40,14 @@ public class Recipe extends ModelBase {
         return ingredients;
     }
 
+    public List<Step> getSteps() {
+        return steps;
+    }
+
+    public NutritionalData getNutritionalData() {
+        return nutritionalData;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -46,6 +58,14 @@ public class Recipe extends ModelBase {
 
     public void setIngredients(List<Ingredient> ingredients) {
         this.ingredients = ingredients;
+    }
+
+    public void setSteps(List<Step> steps) {
+        this.steps = steps;
+    }
+
+    public void setNutritionalData(NutritionalData nutritionalData) {
+        this.nutritionalData = nutritionalData;
     }
 
     public static Recipe findById(Long id) {
