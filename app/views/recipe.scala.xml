@@ -1,0 +1,5 @@
+@(recipe: Recipe)
+<recipe>
+    <title>@recipe.getTitle()</title>
+    <description>@recipe.getDescription()</description>
+</recipe>

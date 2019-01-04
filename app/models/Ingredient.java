@@ -1,6 +1,8 @@
 package models;
 
 
+import play.data.validation.Constraints.Required;
+
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import java.util.Set;
@@ -8,6 +10,7 @@ import java.util.Set;
 @Entity
 public class Ingredient extends ModelBase {
 
+    @Required(message = "El campo 'name' es requerido")
     private String name;
 
     @ManyToMany(mappedBy = "ingredients")

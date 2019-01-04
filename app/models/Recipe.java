@@ -1,6 +1,7 @@
 package models;
 
 import io.ebean.Finder;
+import play.data.validation.Constraints.Required;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,12 +12,17 @@ public class Recipe extends ModelBase {
 
     private static final Finder<Long, Recipe> find = new Finder<>(Recipe.class);
 
+    @Required(message = "El campo 'title' es requerido")
     private String title;
+
+    @Required(message = "El campo 'description' es requerido")
     private String description;
 
+    @Required(message = "El campo 'ingredients' es requerido")
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Ingredient> ingredients = new ArrayList<>();
 
+    @Required(message = "El campo 'steps' es requerido")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
     private List<Step> steps;
 
@@ -70,6 +76,10 @@ public class Recipe extends ModelBase {
 
     public static Recipe findById(Long id) {
         return find.query().where().eq("id", id).findOne();
+    }
+
+    public static List<Recipe> all() {
+        return find.query().findList();
     }
 
 }
