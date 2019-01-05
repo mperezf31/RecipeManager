@@ -4,3 +4,4 @@ ingredients-is-required=Los ingredientes son requeridos
 steps-is-required=Los pasos son requeridos
 name-is-required=El nombre es requerido
 unique-recipe-title=Ya existe otra receta con el mismo título
+error.invalid=Valor no válido

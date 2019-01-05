@@ -10,16 +10,16 @@ import java.sql.Timestamp;
 @Entity
 public class NutritionalData extends ModelBase {
 
-    private String calories;
-    private String protein;
-    private String carbohydrates;
-    private String fat;
+    private Integer calories;
+    private Integer protein;
+    private Integer carbohydrates;
+    private Integer fat;
 
     @JsonBackReference
     @OneToOne(mappedBy = "nutritionalData")
     private Recipe recipe;
 
-    NutritionalData(String calories, String protein, String fat, String carbohydrates) {
+    NutritionalData(Integer calories, Integer protein, Integer fat, Integer carbohydrates) {
         this.calories = calories;
         this.protein = protein;
         this.carbohydrates = carbohydrates;
@@ -38,35 +38,35 @@ public class NutritionalData extends ModelBase {
         return super.getWhenCreated();
     }
 
-    public String getCalories() {
+    public Integer getCalories() {
         return calories;
     }
 
-    public String getProtein() {
+    public Integer getProtein() {
         return protein;
     }
 
-    public String getCarbohydrates() {
+    public Integer getCarbohydrates() {
         return carbohydrates;
     }
 
-    public String getFat() {
+    public Integer getFat() {
         return fat;
     }
 
-    public void setCalories(String calories) {
+    public void setCalories(Integer calories) {
         this.calories = calories;
     }
 
-    public void setProtein(String protein) {
+    public void setProtein(Integer protein) {
         this.protein = protein;
     }
 
-    public void setCarbohydrates(String carbohydrates) {
+    public void setCarbohydrates(Integer carbohydrates) {
         this.carbohydrates = carbohydrates;
     }
 
-    public void setFat(String fat) {
+    public void setFat(Integer fat) {
         this.fat = fat;
     }
 }
