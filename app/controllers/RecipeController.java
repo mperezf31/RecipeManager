@@ -1,15 +1,18 @@
 package controllers;
 
+import models.Ingredient;
 import models.Recipe;
 import play.data.Form;
 import play.data.FormFactory;
 import play.db.ebean.Transactional;
 import play.libs.Json;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,8 +22,7 @@ import java.util.List;
 public class RecipeController extends Controller {
 
     @Inject
-    private
-    FormFactory formFactory;
+    private FormFactory formFactory;
 
     public Result index() {
         return Results.redirect("/recipes");
@@ -31,15 +33,30 @@ public class RecipeController extends Controller {
      */
     @Transactional
     public Result createRecipe() {
-        Form<Recipe> recipe = formFactory.form(Recipe.class).bindFromRequest();
+        Form<Recipe> recipeForm = formFactory.form(Recipe.class).bindFromRequest();
 
-        if (recipe.hasErrors()) {
-            return Results.badRequest(Json.toJson(recipe.errorsAsJson()));
+        if (recipeForm.hasErrors()) {
+            return Results.badRequest(Json.toJson(recipeForm.errorsAsJson()));
         }
 
-        recipe.get().save();
+        Recipe recipe = recipeForm.get();
 
-        return Results.ok(Json.toJson(recipe.get()));
+        List<Ingredient> ingredientsToCreate = recipe.getIngredients();
+        recipe.setIngredients(new ArrayList<>());
+
+        for (Ingredient ingredientToCreate : ingredientsToCreate) {
+            Ingredient ingredientInDB = Ingredient.findIngredientByName(ingredientToCreate.getName());
+            if (ingredientInDB != null) {
+                recipe.addIngredient(ingredientInDB);
+            } else {
+                ingredientToCreate.save();
+                recipe.addIngredient(ingredientToCreate);
+            }
+        }
+
+        recipe.save();
+
+       return contentNegotiationRecipe(recipe);
     }
 
     /**
@@ -51,6 +68,10 @@ public class RecipeController extends Controller {
             return Results.notFound();
         }
 
+        return contentNegotiationRecipe(recipe);
+    }
+
+    private Result contentNegotiationRecipe(Recipe recipe) {
         if (request().accepts("application/json")) {
             return Results.ok(Json.toJson(recipe));
         } else if (request().accepts("application/xml")) {

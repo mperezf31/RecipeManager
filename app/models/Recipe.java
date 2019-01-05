@@ -22,7 +22,7 @@ public class Recipe extends ModelBase {
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Ingredient> ingredients = new ArrayList<>();
 
-    @Required(message = "El campo 'steps' es requerido")
+  //  @Required(message = "El campo 'steps' es requerido")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
     private List<Step> steps;
 
@@ -82,4 +82,8 @@ public class Recipe extends ModelBase {
         return find.query().findList();
     }
 
+    public void addIngredient(Ingredient ingredient) {
+        this.ingredients.add(ingredient);
+        ingredient.getRecipes().add(this);
+    }
 }

@@ -1,5 +1,7 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
@@ -11,6 +13,7 @@ public class NutritionalData extends ModelBase {
     private String carbohydrates;
     private String fat;
 
+    @JsonBackReference
     @OneToOne(mappedBy = "nutritionalData")
     private Recipe recipe;
 
