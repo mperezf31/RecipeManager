@@ -2,11 +2,13 @@ package models;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.ebean.Finder;
 import play.data.validation.Constraints.Required;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
@@ -23,6 +25,12 @@ public class Ingredient extends ModelBase {
 
     Ingredient(String name) {
         this.name = name;
+    }
+
+    @JsonIgnore
+    @Override
+    public Timestamp getWhenCreated() {
+        return super.getWhenCreated();
     }
 
     public String getName() {

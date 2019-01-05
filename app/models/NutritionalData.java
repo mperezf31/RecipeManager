@@ -1,9 +1,11 @@
 package models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
+import java.sql.Timestamp;
 
 @Entity
 public class NutritionalData extends ModelBase {
@@ -22,6 +24,18 @@ public class NutritionalData extends ModelBase {
         this.protein = protein;
         this.carbohydrates = carbohydrates;
         this.fat = fat;
+    }
+
+    @JsonIgnore
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
+
+    @JsonIgnore
+    @Override
+    public Timestamp getWhenCreated() {
+        return super.getWhenCreated();
     }
 
     public String getCalories() {

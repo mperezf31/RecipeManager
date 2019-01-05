@@ -24,8 +24,8 @@ public class Recipe extends ModelBase {
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Ingredient> ingredients = new ArrayList<>();
 
-    //  @Required(message = "El campo 'steps' es requerido")
     @JsonManagedReference
+    @Required(message = "El campo 'steps' es requerido")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
     private List<Step> steps;
 

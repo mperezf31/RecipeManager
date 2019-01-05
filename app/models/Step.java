@@ -1,15 +1,17 @@
 package models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import play.data.validation.Constraints;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import play.data.validation.Constraints.Required;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import java.sql.Timestamp;
 
 @Entity
 public class Step extends ModelBase {
 
-    @Constraints.Required(message = "El campo 'description' es requerido")
+    @Required(message = "El campo 'description' es requerido")
     private String description;
 
     @JsonBackReference
@@ -18,6 +20,12 @@ public class Step extends ModelBase {
 
     Step(String description) {
         this.description = description;
+    }
+
+    @JsonIgnore
+    @Override
+    public Timestamp getWhenCreated() {
+        return super.getWhenCreated();
     }
 
     public String getDescription() {
