@@ -71,6 +71,22 @@ public class RecipeController extends Controller {
     }
 
     /**
+     * Update a recipe
+     */
+    @Transactional
+    public Result updateRecipe(Integer recipeId, String newTitle) {
+        Recipe recipe = Recipe.findById(recipeId.longValue());
+        if (recipe == null) {
+            return Results.notFound();
+        }else{
+            recipe.setTitle(newTitle);
+        }
+        recipe.update();
+
+        return contentNegotiationRecipe(recipe);
+    }
+
+    /**
      * Show the recipe result in json or xml format, it depends of the content-negotiation
      */
     private Result contentNegotiationRecipe(Recipe recipe) {
