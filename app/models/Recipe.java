@@ -13,19 +13,19 @@ public class Recipe extends ModelBase {
 
     private static final Finder<Long, Recipe> find = new Finder<>(Recipe.class);
 
-    @Required(message = "El campo 'title' es requerido")
+    @Required(message = "title-is-required")
     private String title;
 
-    @Required(message = "El campo 'description' es requerido")
+    @Required(message = "description-is-required")
     private String description;
 
     @JsonManagedReference
-    @Required(message = "El campo 'ingredients' es requerido")
+    @Required(message = "ingredients-is-required")
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Ingredient> ingredients = new ArrayList<>();
 
     @JsonManagedReference
-    @Required(message = "El campo 'steps' es requerido")
+    @Required(message = "steps-is-required")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
     private List<Step> steps;
 

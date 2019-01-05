@@ -16,7 +16,7 @@ public class Ingredient extends ModelBase {
 
     private static final Finder<Long, Ingredient> find = new Finder<>(Ingredient.class);
 
-    @Required(message = "El campo 'name' es requerido")
+    @Required(message = "name-is-required")
     private String name;
 
     @JsonBackReference

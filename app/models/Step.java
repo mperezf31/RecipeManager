@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 @Entity
 public class Step extends ModelBase {
 
-    @Required(message = "El campo 'description' es requerido")
+    @Required(message = "description-is-required")
     private String description;
 
     @JsonBackReference
