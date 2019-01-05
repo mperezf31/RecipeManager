@@ -2,6 +2,7 @@ package controllers;
 
 import models.Ingredient;
 import models.Recipe;
+import play.cache.SyncCacheApi;
 import play.data.Form;
 import play.data.FormFactory;
 import play.db.ebean.Transactional;
@@ -23,11 +24,15 @@ public class RecipeController extends Controller {
     @Inject
     private FormFactory formFactory;
 
+    @Inject
+    private SyncCacheApi cache;
+
     /**
      * Create new recipe
      */
     @Transactional
     public Result createRecipe() {
+
         Form<Recipe> recipeForm = formFactory.form(Recipe.class).bindFromRequest();
 
         // Check if the form contains errors
@@ -54,16 +59,31 @@ public class RecipeController extends Controller {
 
         recipe.save();
 
-       return contentNegotiationRecipe(recipe);
+        //Add recipe to the cache
+        cache.set("recipe-" + recipe.getId(), recipe);
+
+        // Remove recipes from the cache, because there is one more
+        cache.remove("recipes");
+
+        return contentNegotiationRecipe(recipe);
     }
 
     /**
      * Retrieve a recipe by id
      */
     public Result retrieveRecipe(Integer recipeId) {
-        Recipe recipe = Recipe.findById(recipeId.longValue());
+
+        // Get the recipe from the cache, if it is null get from the database
+        Recipe recipe = cache.get("recipe-" + recipeId);
         if (recipe == null) {
-            return Results.notFound();
+            recipe = Recipe.findById(recipeId.longValue());
+
+            if (recipe != null) {
+                //Add recipe to the cache
+                cache.set("recipe-" + recipeId, recipe);
+            } else {
+                return Results.notFound();
+            }
         }
 
         return contentNegotiationRecipe(recipe);
@@ -74,13 +94,21 @@ public class RecipeController extends Controller {
      */
     @Transactional
     public Result updateRecipe(Integer recipeId, String newTitle) {
+
         Recipe recipe = Recipe.findById(recipeId.longValue());
+
         if (recipe == null) {
             return Results.notFound();
-        }else{
+        } else {
             recipe.setTitle(newTitle);
         }
         recipe.update();
+
+        //Update recipe to the cache
+        cache.set("recipe-" + recipeId, recipe);
+
+        // Remove recipes from the cache, because the content has changed
+        cache.remove("recipes");
 
         return contentNegotiationRecipe(recipe);
     }
@@ -89,8 +117,14 @@ public class RecipeController extends Controller {
      * Remove a recipe
      */
     public Result deleteRecipe(Integer recipeId) {
+
         Recipe recipe = Recipe.findById(recipeId.longValue());
+
         if (recipe != null && recipe.delete()) {
+            //Remove the recipe in cache
+            cache.remove("recipe-" + recipeId);
+            // Remove recipes from the cache, because there is one less
+            cache.remove("recipes");
             return Results.ok();
         } else {
             return Results.notFound();
@@ -101,7 +135,14 @@ public class RecipeController extends Controller {
      * List all recipes
      */
     public Result listRecipes() {
-        List<Recipe> recipes = Recipe.all();
+
+        //First check if the cache contains the recipes, if it return null get them from the database
+        List<Recipe> recipes = cache.get("recipes");
+        if (recipes == null) {
+            recipes = Recipe.all();
+            //Add recipes to the cache
+            cache.set("recipes", recipes);
+        }
 
         if (request().accepts("application/json")) {
             return Results.ok(Json.toJson(recipes));
@@ -116,6 +157,7 @@ public class RecipeController extends Controller {
      * Show the recipe result in json or xml format, it depends of the content-negotiation
      */
     private Result contentNegotiationRecipe(Recipe recipe) {
+
         if (request().accepts("application/json")) {
             return Results.ok(Json.toJson(recipe));
         } else if (request().accepts("application/xml")) {

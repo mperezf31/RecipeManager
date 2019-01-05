@@ -15,3 +15,6 @@ libraryDependencies += guice
 libraryDependencies += evolutions
 libraryDependencies += jdbc
 
+libraryDependencies ++= Seq(
+  ehcache
+)
