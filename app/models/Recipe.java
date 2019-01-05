@@ -1,5 +1,6 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.ebean.Finder;
 import play.data.validation.Constraints.Required;
 
@@ -18,14 +19,17 @@ public class Recipe extends ModelBase {
     @Required(message = "El campo 'description' es requerido")
     private String description;
 
+    @JsonManagedReference
     @Required(message = "El campo 'ingredients' es requerido")
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Ingredient> ingredients = new ArrayList<>();
 
-  //  @Required(message = "El campo 'steps' es requerido")
+    //  @Required(message = "El campo 'steps' es requerido")
+    @JsonManagedReference
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
     private List<Step> steps;
 
+    @JsonManagedReference
     @OneToOne(cascade = CascadeType.ALL)
     private NutritionalData nutritionalData;
 
