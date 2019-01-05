@@ -1,5 +1,21 @@
 @(recipe: Recipe)
 <recipe>
+    <id>@recipe.getId()</id>
+    <whenCreated>@recipe.getWhenCreated()</whenCreated>
     <title>@recipe.getTitle()</title>
     <description>@recipe.getDescription()</description>
+    <ingredients>
+        @for(ingredientItem<- recipe.getIngredients()) {
+        @ingredient(ingredientItem)
+        }
+    </ingredients>
+    <steps>
+        @for(stepItem<- recipe.getSteps()) {
+        @step(stepItem)
+        }
+    </steps>
+    @if(recipe.getNutritionalData()!=null) {
+    @nutritionalData(recipe.getNutritionalData())
+    }
+
 </recipe>

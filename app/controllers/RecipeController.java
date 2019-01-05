@@ -7,7 +7,6 @@ import play.data.FormFactory;
 import play.db.ebean.Transactional;
 import play.libs.Json;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
 
@@ -87,19 +86,6 @@ public class RecipeController extends Controller {
     }
 
     /**
-     * Show the recipe result in json or xml format, it depends of the content-negotiation
-     */
-    private Result contentNegotiationRecipe(Recipe recipe) {
-        if (request().accepts("application/json")) {
-            return Results.ok(Json.toJson(recipe));
-        } else if (request().accepts("application/xml")) {
-            return Results.ok(views.xml.recipe.render(recipe));
-        } else {
-            return Results.notAcceptable();
-        }
-    }
-
-    /**
      * Remove a recipe
      */
     public Result deleteRecipe(Integer recipeId) {
@@ -124,7 +110,19 @@ public class RecipeController extends Controller {
         } else {
             return Results.notAcceptable();
         }
+    }
 
+    /**
+     * Show the recipe result in json or xml format, it depends of the content-negotiation
+     */
+    private Result contentNegotiationRecipe(Recipe recipe) {
+        if (request().accepts("application/json")) {
+            return Results.ok(Json.toJson(recipe));
+        } else if (request().accepts("application/xml")) {
+            return Results.ok(views.xml.recipe.render(recipe));
+        } else {
+            return Results.notAcceptable();
+        }
     }
 
 
