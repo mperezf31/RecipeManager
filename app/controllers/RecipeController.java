@@ -24,10 +24,6 @@ public class RecipeController extends Controller {
     @Inject
     private FormFactory formFactory;
 
-    public Result index() {
-        return Results.redirect("/recipes");
-    }
-
     /**
      * Create new recipe
      */
@@ -35,16 +31,19 @@ public class RecipeController extends Controller {
     public Result createRecipe() {
         Form<Recipe> recipeForm = formFactory.form(Recipe.class).bindFromRequest();
 
+        // Check if the form contains errors
         if (recipeForm.hasErrors()) {
             return Results.badRequest(Json.toJson(recipeForm.errorsAsJson()));
         }
 
         Recipe recipe = recipeForm.get();
 
+        // Check the ingredients of the new recipe, if one does not exist it is added to the database
         List<Ingredient> ingredientsToCreate = recipe.getIngredients();
         recipe.setIngredients(new ArrayList<>());
 
         for (Ingredient ingredientToCreate : ingredientsToCreate) {
+            // Find the ingredient in the database by the name
             Ingredient ingredientInDB = Ingredient.findIngredientByName(ingredientToCreate.getName());
             if (ingredientInDB != null) {
                 recipe.addIngredient(ingredientInDB);
@@ -71,18 +70,21 @@ public class RecipeController extends Controller {
         return contentNegotiationRecipe(recipe);
     }
 
+    /**
+     * Show the recipe result in json or xml format, it depends of the content-negotiation
+     */
     private Result contentNegotiationRecipe(Recipe recipe) {
         if (request().accepts("application/json")) {
             return Results.ok(Json.toJson(recipe));
         } else if (request().accepts("application/xml")) {
-            return Results.ok(Json.toJson(views.xml.recipe.render(recipe)));
+            return Results.ok(views.xml.recipe.render(recipe));
         } else {
             return Results.notAcceptable();
         }
     }
 
     /**
-     * Remove recipe
+     * Remove a recipe
      */
     public Result deleteRecipe(Integer recipeId) {
         Recipe recipe = Recipe.findById(recipeId.longValue());
@@ -90,7 +92,6 @@ public class RecipeController extends Controller {
             return Results.ok();
         } else {
             return Results.notFound();
-
         }
     }
 

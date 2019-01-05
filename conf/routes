@@ -3,11 +3,13 @@
 # ~~~~
 
 
-GET     /                        controllers.RecipeController.index
-POST    /recipe                  controllers.RecipeController.createRecipe
+GET     /                        controllers.RecipeController.listRecipes()
+GET     /recipe/:id              controllers.RecipeController.retrieveRecipe(id: Integer)
+POST    /recipe                  controllers.RecipeController.createRecipe()
+DELETE  /recipe/:id              controllers.RecipeController.deleteRecipe(id: Integer)
 
 #List recipes
-GET     /recipes                 controllers.RecipeController.listRecipes
+GET     /recipes                 controllers.RecipeController.listRecipes()
 
 
 # Map static resources from the /public folder to the /assets URL path
