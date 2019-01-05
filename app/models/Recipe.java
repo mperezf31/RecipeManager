@@ -3,6 +3,7 @@ package models;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.ebean.Finder;
 import play.data.validation.Constraints.Required;
+import validators.UniqueRecipeTitle;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ public class Recipe extends ModelBase {
 
     private static final Finder<Long, Recipe> find = new Finder<>(Recipe.class);
 
+    @UniqueRecipeTitle(message = "unique-recipe-title")
     @Required(message = "title-is-required")
     private String title;
 
@@ -80,6 +82,10 @@ public class Recipe extends ModelBase {
 
     public static Recipe findById(Long id) {
         return find.query().where().eq("id", id).findOne();
+    }
+
+    public static Recipe findByTitle(String title) {
+        return find.query().where().eq("title", title).findOne();
     }
 
     public static List<Recipe> all() {
