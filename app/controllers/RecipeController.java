@@ -8,8 +8,10 @@ import play.data.FormFactory;
 import play.db.ebean.Transactional;
 import play.libs.Json;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
+import validators.RecipeTitleValidator;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -96,12 +98,18 @@ public class RecipeController extends Controller {
     public Result updateRecipe(Integer recipeId, String newTitle) {
 
         Recipe recipe = Recipe.findById(recipeId.longValue());
-
         if (recipe == null) {
             return Results.notFound();
-        } else {
-            recipe.setTitle(newTitle);
         }
+
+        //Validate title
+        RecipeTitleValidator recipeTitleValidator = new RecipeTitleValidator();
+        if (!recipeTitleValidator.isValid(newTitle)) {
+            String errorMsg = Http.Context.current().messages().at("unique-recipe-title");
+            return Results.badRequest(errorMsg);
+        }
+
+        recipe.setTitle(newTitle);
         recipe.update();
 
         //Update recipe to the cache
