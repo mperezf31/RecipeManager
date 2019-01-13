@@ -102,7 +102,7 @@ public class RecipeController extends Controller {
             return Results.notFound();
         }
 
-        //Validate title
+        //Validate the new title
         RecipeTitleValidator recipeTitleValidator = new RecipeTitleValidator();
         if (!recipeTitleValidator.isValid(newTitle)) {
             String errorMsg = Http.Context.current().messages().at("unique-recipe-title");

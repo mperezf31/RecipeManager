@@ -8,6 +8,7 @@ import play.mvc.Result;
 import play.test.WithApplication;
 
 import static org.junit.Assert.assertEquals;
+import static play.mvc.Http.Status.NOT_FOUND;
 import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.GET;
 import static play.test.Helpers.route;
@@ -27,6 +28,42 @@ public class RecipeControllerTest extends WithApplication {
 
         Result result = route(app, request);
         assertEquals(OK, result.status());
+    }
+
+    @Test
+    public void testGetRecipesJson() {
+        Http.RequestBuilder request = new Http.RequestBuilder()
+                .header("Accept", "application/json")
+                .method(GET)
+                .uri("/recipes");
+
+        Result result = route(app, request);
+        assertEquals(OK, result.status());
+        assertEquals("application/json", result.contentType().get());
+
+    }
+
+    @Test
+    public void testGetRecipesXml() {
+        Http.RequestBuilder request = new Http.RequestBuilder()
+                .header("Accept", "application/xml")
+                .method(GET)
+                .uri("/recipes");
+
+        Result result = route(app, request);
+        assertEquals(OK, result.status());
+        assertEquals("application/xml", result.contentType().get());
+
+    }
+
+    @Test
+    public void testBadRoute() {
+        Http.RequestBuilder request = new Http.RequestBuilder()
+                .method(GET)
+                .uri("rec");
+
+        Result result = route(app, request);
+        assertEquals(NOT_FOUND, result.status());
     }
 
 }
