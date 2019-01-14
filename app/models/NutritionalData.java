@@ -22,8 +22,8 @@ public class NutritionalData extends ModelBase {
     public NutritionalData(Integer calories, Integer protein, Integer fat, Integer carbohydrates) {
         this.calories = calories;
         this.protein = protein;
-        this.carbohydrates = carbohydrates;
         this.fat = fat;
+        this.carbohydrates = carbohydrates;
     }
 
     @JsonIgnore

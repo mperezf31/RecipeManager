@@ -5,17 +5,16 @@ import models.Recipe;
 import models.Step;
 import org.junit.Test;
 import play.Application;
-import play.inject.guice.GuiceApplicationBuilder;
 import play.libs.Json;
 import play.mvc.Http;
 import play.mvc.Result;
+import play.test.Helpers;
 import play.test.WithApplication;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static play.mvc.Http.Status.NOT_FOUND;
 import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.*;
@@ -24,7 +23,7 @@ public class RecipeControllerTest extends WithApplication {
 
     @Override
     protected Application provideApplication() {
-        return new GuiceApplicationBuilder().build();
+        return Helpers.fakeApplication(Helpers.inMemoryDatabase());
     }
 
     @Test
@@ -38,7 +37,7 @@ public class RecipeControllerTest extends WithApplication {
     }
 
     @Test
-    public void testAddRecipeXml() {
+    public void testAddRecipe() {
         Recipe recipe = getRecipe();
 
         Http.RequestBuilder request = new Http.RequestBuilder()
@@ -51,44 +50,6 @@ public class RecipeControllerTest extends WithApplication {
         assertEquals(OK, result.status());
         assertEquals("application/xml", result.contentType().get());
 
-    }
-
-    @Test
-    public void testAddRecipeJson() {
-        Recipe recipe = getRecipe();
-
-        Http.RequestBuilder request = new Http.RequestBuilder()
-                .header("Accept", "application/json")
-                .method(POST)
-                .bodyJson(Json.toJson(recipe))
-                .uri("/recipe");
-
-        Result result = route(app, request);
-        assertEquals(OK, result.status());
-        assertEquals("application/json", result.contentType().get());
-
-    }
-
-    private Recipe getRecipe() {
-        Recipe recipe = new Recipe("Sopa", "Receta para elavorar la sopa de la abuela");
-
-        //Add ingredients
-        Ingredient ingredient_1 = new Ingredient("fideos");
-        Ingredient ingredient_2 = new Ingredient("sal");
-        List<Ingredient> ingredients = new ArrayList<>();
-        ingredients.add(ingredient_1);
-        ingredients.add(ingredient_2);
-        recipe.setIngredients(ingredients);
-
-        //Add steps
-        Step steps_1 = new Step("Poner a hervir dos litros de agua");
-        Step steps_2 = new Step("Echar 200g de sal");
-        List<Step> steps = new ArrayList<>();
-        steps.add(steps_1);
-        steps.add(steps_2);
-        recipe.setSteps(steps);
-
-        return recipe;
     }
 
 
@@ -122,10 +83,10 @@ public class RecipeControllerTest extends WithApplication {
     public void testDeleteRecipes() {
         Http.RequestBuilder request = new Http.RequestBuilder()
                 .method(DELETE)
-                .uri("/recipe/1");
+                .uri("/recipe/1000");
 
         Result result = route(app, request);
-        assertNotEquals(OK, result.status());
+        assertEquals(NOT_FOUND, result.status());
     }
 
     @Test
@@ -136,6 +97,29 @@ public class RecipeControllerTest extends WithApplication {
 
         Result result = route(app, request);
         assertEquals(NOT_FOUND, result.status());
+    }
+
+
+    private Recipe getRecipe() {
+        Recipe recipe = new Recipe("Sopa", "Receta para elavorar la sopa de la abuela");
+
+        //Add ingredients
+        Ingredient ingredient_1 = new Ingredient("fideos");
+        Ingredient ingredient_2 = new Ingredient("sal");
+        List<Ingredient> ingredients = new ArrayList<>();
+        ingredients.add(ingredient_1);
+        ingredients.add(ingredient_2);
+        recipe.setIngredients(ingredients);
+
+        //Add steps
+        Step steps_1 = new Step("Poner a hervir dos litros de agua");
+        Step steps_2 = new Step("Echar 200g de sal");
+        List<Step> steps = new ArrayList<>();
+        steps.add(steps_1);
+        steps.add(steps_2);
+        recipe.setSteps(steps);
+
+        return recipe;
     }
 
 }
