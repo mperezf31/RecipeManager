@@ -35,7 +35,7 @@ public class Recipe extends ModelBase {
     @OneToOne(cascade = CascadeType.ALL)
     private NutritionalData nutritionalData;
 
-    Recipe(String title, String description) {
+    public Recipe(String title, String description) {
         this.title = title;
         this.description = description;
     }

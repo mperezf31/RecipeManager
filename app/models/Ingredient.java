@@ -23,7 +23,7 @@ public class Ingredient extends ModelBase {
     @ManyToMany(mappedBy = "ingredients")
     private List<Recipe> recipes;
 
-    Ingredient(String name) {
+    public Ingredient(String name) {
         this.name = name;
     }
 

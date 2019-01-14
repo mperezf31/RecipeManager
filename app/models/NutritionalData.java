@@ -19,7 +19,7 @@ public class NutritionalData extends ModelBase {
     @OneToOne(mappedBy = "nutritionalData")
     private Recipe recipe;
 
-    NutritionalData(Integer calories, Integer protein, Integer fat, Integer carbohydrates) {
+    public NutritionalData(Integer calories, Integer protein, Integer fat, Integer carbohydrates) {
         this.calories = calories;
         this.protein = protein;
         this.carbohydrates = carbohydrates;

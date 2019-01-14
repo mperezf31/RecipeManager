@@ -1,17 +1,24 @@
 package controllers;
 
+import models.Ingredient;
+import models.Recipe;
+import models.Step;
 import org.junit.Test;
 import play.Application;
 import play.inject.guice.GuiceApplicationBuilder;
+import play.libs.Json;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.WithApplication;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static play.mvc.Http.Status.NOT_FOUND;
 import static play.mvc.Http.Status.OK;
-import static play.test.Helpers.GET;
-import static play.test.Helpers.route;
+import static play.test.Helpers.*;
 
 public class RecipeControllerTest extends WithApplication {
 
@@ -31,6 +38,61 @@ public class RecipeControllerTest extends WithApplication {
     }
 
     @Test
+    public void testAddRecipeXml() {
+        Recipe recipe = getRecipe();
+
+        Http.RequestBuilder request = new Http.RequestBuilder()
+                .header("Accept", "application/xml")
+                .method(POST)
+                .bodyJson(Json.toJson(recipe))
+                .uri("/recipe");
+
+        Result result = route(app, request);
+        assertEquals(OK, result.status());
+        assertEquals("application/xml", result.contentType().get());
+
+    }
+
+    @Test
+    public void testAddRecipeJson() {
+        Recipe recipe = getRecipe();
+
+        Http.RequestBuilder request = new Http.RequestBuilder()
+                .header("Accept", "application/json")
+                .method(POST)
+                .bodyJson(Json.toJson(recipe))
+                .uri("/recipe");
+
+        Result result = route(app, request);
+        assertEquals(OK, result.status());
+        assertEquals("application/json", result.contentType().get());
+
+    }
+
+    private Recipe getRecipe() {
+        Recipe recipe = new Recipe("Sopa", "Receta para elavorar la sopa de la abuela");
+
+        //Add ingredients
+        Ingredient ingredient_1 = new Ingredient("fideos");
+        Ingredient ingredient_2 = new Ingredient("sal");
+        List<Ingredient> ingredients = new ArrayList<>();
+        ingredients.add(ingredient_1);
+        ingredients.add(ingredient_2);
+        recipe.setIngredients(ingredients);
+
+        //Add steps
+        Step steps_1 = new Step("Poner a hervir dos litros de agua");
+        Step steps_2 = new Step("Echar 200g de sal");
+        List<Step> steps = new ArrayList<>();
+        steps.add(steps_1);
+        steps.add(steps_2);
+        recipe.setSteps(steps);
+
+        return recipe;
+    }
+
+
+    @Test
     public void testGetRecipesJson() {
         Http.RequestBuilder request = new Http.RequestBuilder()
                 .header("Accept", "application/json")
@@ -40,8 +102,8 @@ public class RecipeControllerTest extends WithApplication {
         Result result = route(app, request);
         assertEquals(OK, result.status());
         assertEquals("application/json", result.contentType().get());
-
     }
+
 
     @Test
     public void testGetRecipesXml() {
@@ -57,10 +119,20 @@ public class RecipeControllerTest extends WithApplication {
     }
 
     @Test
+    public void testDeleteRecipes() {
+        Http.RequestBuilder request = new Http.RequestBuilder()
+                .method(DELETE)
+                .uri("/recipe/1");
+
+        Result result = route(app, request);
+        assertNotEquals(OK, result.status());
+    }
+
+    @Test
     public void testBadRoute() {
         Http.RequestBuilder request = new Http.RequestBuilder()
                 .method(GET)
-                .uri("rec");
+                .uri("1/recipe");
 
         Result result = route(app, request);
         assertEquals(NOT_FOUND, result.status());

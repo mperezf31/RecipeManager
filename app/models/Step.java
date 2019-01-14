@@ -18,7 +18,7 @@ public class Step extends ModelBase {
     @ManyToOne
     public Recipe recipe;
 
-    Step(String description) {
+    public Step(String description) {
         this.description = description;
     }
 
