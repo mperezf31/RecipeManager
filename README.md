@@ -1,33 +1,320 @@
-# Recipe Manager
+# Recipe Manger
 
-To follow the steps in this tutorial, you will need the correct version of Java and a build tool. You can build Play projects with sbt or Gradle. Since sbt works particularly well with Play, we recommend trying this example with sbt. The template requires:
+**Get recipes**
+----
+  Returns the list of recipes.
 
-* Java Software Developer's Kit (SE) 1.8 or higher
-* sbt 0.13.15 or higher (we recommend 1.2.3)
+* **URL**
 
-To check your Java version, enter the following in a command window:
+  /recipes
 
-`java -version`
+* **Method:**
 
-To check your sbt version, enter the following in a command window:
+  `GET`
+  
+* **Accept:**
 
-`sbt sbt-version`
+  `application/json` OR `application/xml`
+  
+* **Accept-Language:**
 
-If you do not have the required versions, follow these links to obtain them:
+  `es` OR `en`
+  
+*  **URL Params**
+ 
+    **Optional:**
 
-* [Java SE](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
-* [sbt](http://www.scala-sbt.org/download.html)
+   `category=[string]`
 
-## Build and run the project
+* **Data Params**
 
-This example Play project was created from a seed template. It includes all Play components and an Akka HTTP server. The project is also configured with filters for Cross-Site Request Forgery (CSRF) protection and security headers.
+    **None**
 
-To build and run the project:
+* **Success Response:**
 
-1. Use a command window to change into the example project directory, for example: `cd play-java-hello-world-web`
+  * **Code:** 200 <br />
+ 
+* **Error Response:**
 
-2. Build the project. Enter: `sbt run`. The project builds and starts the embedded HTTP server. Since this downloads libraries and dependencies, the amount of time required depends partly on your connection's speed.
+  * **Code:** 404 Not found <br />
+  * **Code:** 406 Not Acceptable <br />
 
-3. After the message `Server started, ...` displays, enter the following URL in a browser: <http://localhost:9000>
 
-The Play application responds: `Welcome to the Hello World Tutorial!`
+**Get recipe**
+----
+
+Get a recipe by ID.
+
+* **URL**
+
+  /recipe/:id
+
+* **Method:**
+
+  `GET`
+  
+* **Accept:**
+
+  `application/json` OR `application/xml`
+  
+* **Accept-Language:**
+
+  `es` OR `en`
+  
+*  **URL Params**
+ 
+    **None**
+
+* **Data Params**
+
+    **None**
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+ 
+* **Error Response:**
+
+  * **Code:** 404 Not found <br />
+  * **Code:** 406 Not Acceptable <br />
+  
+* **Sample Response Json:**
+
+  ```
+   {
+   	"id": 8,
+   	"whenCreated": 1548005503000,
+   	"title": "Tortilla al horno",
+   	"description": "Receta de Tortilla al horno rellena y jugosa",
+   	"serves": 4,
+   	"preparationTime": 30,
+   	"ingredients": [{
+   			"id": 3,
+   			"name": "huevos"
+   		},
+   		{
+   			"id": 4,
+   			"name": "patatas"
+   		},...],
+   	"steps": [{
+   		"id": 15,
+   		"description": "Mezcla en la batidora los huevos junto con la harina, la nata y una pizca de sal."
+   	},...],
+   	"categories": [{
+   		"id": 7,
+   		"name": "tortilla"
+   	}...],
+   	"nutritionalData": {
+   		"calories": 12,
+   		"protein": 17,
+   		"carbohydrates": 223,
+   		"fat": 123
+   	}
+   }
+    
+  ```
+    
+* **Sample Response Xml:**
+
+  ```
+    <recipe>
+        <id>8</id>
+        <whenCreated>2019-01-20 18:31:43.0</whenCreated>
+        <title>Tortilla al horno</title>
+        <description>Receta de Tortilla al horno rellena y jugosa</description>
+        <serves>4</serves>
+        <preparationTime>30</preparationTime>
+        <ingredients>
+            <ingredient>
+                <id>3</id>
+                <name>huevos</name>
+            </ingredient>
+            <ingredient>
+                <id>4</id>
+                <name>patatas</name>
+            </ingredient>
+            <ingredient>
+                <id>5</id>
+                <name>aceite</name>
+            </ingredient>
+            ...
+        </ingredients>
+        <steps>
+            <step>
+                <id>15</id>
+                <description>Mezcla en la batidora los huevos junto con la harina, la nata y una pizca de sal.</description>
+            </step>
+            ...
+        </steps>
+        <categories>
+            <category>
+                <id>7</id>
+                <name>tortilla</name>
+            </category>
+            ...
+        </categories>
+        <nutritionalData>
+            <calories>12</calories>
+            <protein>17</protein>
+            <carbohydrates>223</carbohydrates>
+            <fat>123</fat>
+        </nutritionalData>
+    </recipe>
+  ```
+ 
+**Add recipe**
+----
+
+* **URL**
+
+  /recipe
+
+* **Method:**
+
+  `POST`
+
+* **Accept:**
+
+  `application/json` OR `application/xml`
+  
+* **Accept-Language:**
+
+  `es` OR `en`
+  
+*  **URL Params**
+ 
+    **None**
+
+* **Data Params**
+
+    **Required:**
+    
+   `title=[string]`
+   
+   `description=[string]`
+   
+   `serves=[integer]`
+      
+   `ingredients=[integer]`
+   
+   `steps=[Steps]`
+   
+   `categories=[Categories]`
+   
+    **Optional:**
+
+   `preparationTime=[integer]`
+   
+   `nutritionalData=[NutritionalData]`
+
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+ 
+* **Error Response:**
+
+  * **Code:** 400 Bad Request <br />
+  * **Code:** 406 Not Acceptable <br />
+  
+* **Sample Call:**
+
+  ```
+  {
+    "title": "Tortilla al horno",
+    "description": "Receta de Tortilla al horno rellena y jugosa",
+    "serves": 4,
+    "preparationTime": 30,
+    "ingredients": [{
+        "name": "huevos"
+    }, {
+        "name": "harina"
+    }, {
+        "name": "aceite"
+    },...],
+    "steps": [{
+        "description": "Mezcla en la batidora los huevos junto con la harina, la nata y una pizca de sal."
+    },...],
+    "categories": [{
+         "name": "tortilla"
+    },...],
+    "nutritionalData": {
+        "calories": 12,
+        "protein": 17,
+        "carbohydrates": 223,
+        "fat": 123
+    }
+  }
+  ```
+
+**Update recipe**
+----
+
+Update the recipe title.
+
+* **URL**
+
+  /recipe/:id/:newTitle 
+
+* **Method:**
+
+  `PUT`
+
+* **Accept:**
+
+  `application/json` OR `application/xml`
+  
+* **Accept-Language:**
+
+  `es` OR `en`
+  
+*  **URL Params**
+ 
+    **None**
+
+* **Data Params**
+
+    **None**
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+ 
+* **Error Response:**
+
+  * **Code:** 400 Bad Request <br />
+  * **Code:** 404 Not found <br />
+  * **Code:** 406 Not Acceptable <br />
+  
+  
+**Delete recipe**
+----
+
+Delete a specific recipe.
+
+* **URL**
+
+  /recipe/:id
+
+* **Method:**
+
+  `DELETE`
+  
+*  **URL Params**
+ 
+    **None**
+
+* **Data Params**
+
+    **None**
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+ 
+* **Error Response:**
+
+  * **Code:** 404 Not found <br />
+  
+
+
