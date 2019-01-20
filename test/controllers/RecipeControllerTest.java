@@ -1,5 +1,6 @@
 package controllers;
 
+import models.Category;
 import models.Ingredient;
 import models.Recipe;
 import models.Step;
@@ -38,7 +39,29 @@ public class RecipeControllerTest extends WithApplication {
 
     @Test
     public void testAddRecipe() {
-        Recipe recipe = getRecipe();
+        Recipe recipe = new Recipe("Sopa", "Receta para elavorar la sopa de la abuela", 4, 40);
+
+        //Add ingredients
+        Ingredient ingredient_1 = new Ingredient("fideos");
+        Ingredient ingredient_2 = new Ingredient("sal");
+        List<Ingredient> ingredients = new ArrayList<>();
+        ingredients.add(ingredient_1);
+        ingredients.add(ingredient_2);
+        recipe.setIngredients(ingredients);
+
+        //Add steps
+        Step steps_1 = new Step("Poner a hervir dos litros de agua");
+        Step steps_2 = new Step("Echar 200g de sal");
+        List<Step> steps = new ArrayList<>();
+        steps.add(steps_1);
+        steps.add(steps_2);
+        recipe.setSteps(steps);
+
+        //Add category
+        Category category = new Category("sopas");
+        List<Category> categories = new ArrayList<>();
+        categories.add(category);
+        recipe.setCategories(categories);
 
         Http.RequestBuilder request = new Http.RequestBuilder()
                 .header("Accept", "application/xml")
@@ -98,28 +121,4 @@ public class RecipeControllerTest extends WithApplication {
         Result result = route(app, request);
         assertEquals(NOT_FOUND, result.status());
     }
-
-
-    private Recipe getRecipe() {
-        Recipe recipe = new Recipe("Sopa", "Receta para elavorar la sopa de la abuela", 4, 40);
-
-        //Add ingredients
-        Ingredient ingredient_1 = new Ingredient("fideos");
-        Ingredient ingredient_2 = new Ingredient("sal");
-        List<Ingredient> ingredients = new ArrayList<>();
-        ingredients.add(ingredient_1);
-        ingredients.add(ingredient_2);
-        recipe.setIngredients(ingredients);
-
-        //Add steps
-        Step steps_1 = new Step("Poner a hervir dos litros de agua");
-        Step steps_2 = new Step("Echar 200g de sal");
-        List<Step> steps = new ArrayList<>();
-        steps.add(steps_1);
-        steps.add(steps_2);
-        recipe.setSteps(steps);
-
-        return recipe;
-    }
-
 }

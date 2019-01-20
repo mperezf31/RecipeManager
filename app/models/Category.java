@@ -22,6 +22,10 @@ public class Category extends ModelBase {
     @JsonBackReference
     private List<Recipe> recipes;
 
+    public Category(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

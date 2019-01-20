@@ -1,9 +1,6 @@
 package views;
 
-import models.Ingredient;
-import models.NutritionalData;
-import models.Recipe;
-import models.Step;
+import models.*;
 import org.junit.Test;
 import play.Application;
 import play.test.Helpers;
@@ -33,6 +30,8 @@ public class ViewTest extends WithApplication {
         assertTrue(contentAsString(html).contains("<whenCreated>"));
         assertTrue(contentAsString(html).contains("<title>"));
         assertTrue(contentAsString(html).contains("<description>"));
+        assertTrue(contentAsString(html).contains("<serves>"));
+        assertTrue(contentAsString(html).contains("<preparationTime>"));
         assertTrue(contentAsString(html).contains("<ingredients>"));
         assertTrue(contentAsString(html).contains("<steps>"));
     }
@@ -64,6 +63,14 @@ public class ViewTest extends WithApplication {
         assertTrue(contentAsString(html).contains("<description>"));
     }
 
+    @Test
+    public void testCategoryView() {
+        Content html = views.xml.category.render(new Category("carne"));
+        assertEquals("application/xml", html.contentType());
+        assertTrue(contentAsString(html).contains("<category>"));
+        assertTrue(contentAsString(html).contains("<id>"));
+        assertTrue(contentAsString(html).contains("<name>"));
+    }
 
     @Test
     public void testNutritionalDataView() {
