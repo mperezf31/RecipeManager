@@ -1,5 +1,6 @@
 package controllers;
 
+import models.Category;
 import models.Ingredient;
 import models.Recipe;
 import play.cache.SyncCacheApi;
@@ -56,6 +57,22 @@ public class RecipeController extends Controller {
             } else {
                 ingredientToCreate.save();
                 recipe.addIngredient(ingredientToCreate);
+            }
+        }
+
+        // Check the categories of the new recipe, if one does not exist it is added to the database
+        List<Category> categoriesToCreate = recipe.getCategories();
+
+        // Clear recipe categories
+        recipe.setCategories(new ArrayList<>());
+
+        for (Category categoryToCreate : categoriesToCreate) {
+            Category categoryInDB = Category.findCategoryByName(categoryToCreate.getName());
+            if (categoryInDB != null) {
+                recipe.addCategory(categoryInDB);
+            } else {
+                categoryToCreate.save();
+                recipe.addCategory(categoryToCreate);
             }
         }
 

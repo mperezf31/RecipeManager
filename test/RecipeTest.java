@@ -16,7 +16,7 @@ public class RecipeTest {
 
     @Before
     public void setUp() {
-        recipe = new Recipe("Tortilla francesa", "Nueva receta para la tortilla francesa");
+        recipe = new Recipe("Tortilla francesa", "Nueva receta para la tortilla francesa", 4, 40);
     }
 
     @Test

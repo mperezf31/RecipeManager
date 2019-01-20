@@ -101,7 +101,7 @@ public class RecipeControllerTest extends WithApplication {
 
 
     private Recipe getRecipe() {
-        Recipe recipe = new Recipe("Sopa", "Receta para elavorar la sopa de la abuela");
+        Recipe recipe = new Recipe("Sopa", "Receta para elavorar la sopa de la abuela", 4, 40);
 
         //Add ingredients
         Ingredient ingredient_1 = new Ingredient("fideos");
