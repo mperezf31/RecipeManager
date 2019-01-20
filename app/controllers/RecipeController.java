@@ -160,14 +160,28 @@ public class RecipeController extends Controller {
      * List all recipes
      */
     public Result listRecipes() {
+        List<Recipe> recipes;
 
-        //First check if the cache contains the recipes, if it return null get them from the database
-        List<Recipe> recipes = cache.get("recipes");
-        if (recipes == null) {
-            recipes = Recipe.all();
-            //Add recipes to the cache
-            cache.set("recipes", recipes);
+        //Get recipes by category
+        String category = request().getQueryString("category");
+        if (category != null) {
+            Category categoryInDB = Category.findCategoryByName(category);
+            if (categoryInDB != null) {
+                recipes = categoryInDB.getRecipes();
+            } else {
+                return Results.notFound();
+            }
+
+        } else {
+            //First check if the cache contains all recipes, if it return null get them from the database
+            recipes = cache.get("recipes");
+            if (recipes == null) {
+                recipes = Recipe.all();
+                //Add recipes to the cache
+                cache.set("recipes", recipes);
+            }
         }
+
 
         if (request().accepts("application/json")) {
             return Results.ok(Json.toJson(recipes));
