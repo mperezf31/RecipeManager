@@ -164,7 +164,9 @@ public class RecipeController extends Controller {
 
         //Get recipes by category
         String category = request().getQueryString("category");
+
         if (category != null) {
+            //In this case we don´t use cache because the data is updated a lot.
             Category categoryInDB = Category.findCategoryByName(category);
             if (categoryInDB != null) {
                 recipes = categoryInDB.getRecipes();

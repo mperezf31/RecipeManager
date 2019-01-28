@@ -39,7 +39,50 @@
   * **Code:** 404 Not found <br />
   * **Code:** 406 Not Acceptable <br />
 
+* **Sample Call:**
 
+  ```
+  http://localhost:9000/recipes?category=tortilla
+  ```
+
+* **Sample Response Json:**
+
+  ```
+  [
+       {
+            "id": 8,
+            "whenCreated": 1548005503000,
+            "title": "Tortilla al horno",
+            "description": "Receta de Tortilla al horno rellena y jugosa",
+            "serves": 4,
+            "preparationTime": 30,
+            "ingredients": [{
+                    "id": 3,
+                    "name": "huevos"
+                },
+                {
+                    "id": 4,
+                    "name": "patatas"
+                },...],
+            "steps": [{
+                "id": 15,
+                "description": "Mezcla en la batidora los huevos junto con la harina, la nata y una pizca de sal."
+            },...],
+            "categories": [{
+                "id": 7,
+                "name": "tortilla"
+            }...],
+            "nutritionalData": {
+                "calories": 12,
+                "protein": 17,
+                "carbohydrates": 223,
+                "fat": 123
+            }
+       }
+  ]
+    
+  ```
+  
 **Get recipe**
 ----
 
