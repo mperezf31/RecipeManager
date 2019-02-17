@@ -293,11 +293,11 @@ Get a recipe by ID.
 **Update recipe**
 ----
 
-Update the recipe title.
+Update the recipe data.
 
 * **URL**
 
-  /recipe/:id/:newTitle 
+  /recipe/:id 
 
 * **Method:**
 
@@ -317,7 +317,25 @@ Update the recipe title.
 
 * **Data Params**
 
-    **None**
+  **Required:**
+    
+   `title=[string]`
+   
+   `description=[string]`
+   
+   `serves=[integer]`
+      
+   `ingredients=[integer]`
+   
+   `steps=[Steps]`
+   
+   `categories=[Categories]`
+   
+    **Optional:**
+
+   `preparationTime=[integer]`
+   
+   `nutritionalData=[NutritionalData]`
 
 * **Success Response:**
 
@@ -325,8 +343,8 @@ Update the recipe title.
  
 * **Error Response:**
 
-  * **Code:** 400 Bad Request <br />
   * **Code:** 404 Not found <br />
+  * **Code:** 400 Bad Request <br />
   * **Code:** 406 Not Acceptable <br />
   
   
