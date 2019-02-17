@@ -6,7 +6,7 @@
 GET     /                              controllers.RecipeController.listRecipes()
 GET     /recipe/:id                    controllers.RecipeController.retrieveRecipe(id: Integer)
 POST    /recipe                        controllers.RecipeController.createRecipe()
-PUT     /recipe/:id/:newTitle          controllers.RecipeController.updateRecipe(id: Integer, newTitle: String)
+PUT     /recipe/:id                    controllers.RecipeController.updateRecipe(id: Integer)
 DELETE  /recipe/:id                    controllers.RecipeController.deleteRecipe(id: Integer)
 
 #List recipes

@@ -46,35 +46,10 @@ public class RecipeController extends Controller {
         Recipe recipe = recipeForm.get();
 
         // Check the ingredients of the new recipe, if one does not exist it is added to the database
-        List<Ingredient> ingredientsToCreate = recipe.getIngredients();
-        recipe.setIngredients(new ArrayList<>());
-
-        for (Ingredient ingredientToCreate : ingredientsToCreate) {
-            // Find the ingredient in the database by the name
-            Ingredient ingredientInDB = Ingredient.findIngredientByName(ingredientToCreate.getName());
-            if (ingredientInDB != null) {
-                recipe.addIngredient(ingredientInDB);
-            } else {
-                ingredientToCreate.save();
-                recipe.addIngredient(ingredientToCreate);
-            }
-        }
+        recipe.setIngredients(getIngredients(recipe.getIngredients()));
 
         // Check the categories of the new recipe, if one does not exist it is added to the database
-        List<Category> categoriesToCreate = recipe.getCategories();
-
-        // Clear recipe categories
-        recipe.setCategories(new ArrayList<>());
-
-        for (Category categoryToCreate : categoriesToCreate) {
-            Category categoryInDB = Category.findCategoryByName(categoryToCreate.getName());
-            if (categoryInDB != null) {
-                recipe.addCategory(categoryInDB);
-            } else {
-                categoryToCreate.save();
-                recipe.addCategory(categoryToCreate);
-            }
-        }
+        recipe.setCategories(getCategories(recipe.getCategories()));
 
         recipe.save();
 
@@ -85,6 +60,38 @@ public class RecipeController extends Controller {
         cache.remove("recipes");
 
         return contentNegotiationRecipe(recipe);
+    }
+
+    private List<Ingredient> getIngredients(List<Ingredient> ingredientsToCreate) {
+        List<Ingredient> ingredients = new ArrayList<>();
+
+        for (Ingredient ingredientToCreate : ingredientsToCreate) {
+            // Find the ingredient in the database by the name
+            Ingredient ingredientInDB = Ingredient.findIngredientByName(ingredientToCreate.getName());
+            if (ingredientInDB != null) {
+                ingredients.add(ingredientInDB);
+            } else {
+                ingredientToCreate.save();
+                ingredients.add(ingredientToCreate);
+            }
+        }
+
+        return ingredients;
+    }
+
+    private List<Category> getCategories(List<Category> categoriesToCreate) {
+        List<Category> categories = new ArrayList<>();
+
+        for (Category categoryToCreate : categoriesToCreate) {
+            Category categoryInDB = Category.findCategoryByName(categoryToCreate.getName());
+            if (categoryInDB != null) {
+                categories.add(categoryInDB);
+            } else {
+                categoryToCreate.save();
+                categories.add(categoryToCreate);
+            }
+        }
+        return categories;
     }
 
     /**
@@ -112,30 +119,39 @@ public class RecipeController extends Controller {
      * Update a recipe
      */
     @Transactional
-    public Result updateRecipe(Integer recipeId, String newTitle) {
+    public Result updateRecipe(Integer recipeId) {
 
-        Recipe recipe = Recipe.findById(recipeId.longValue());
-        if (recipe == null) {
+        Recipe recipeToUpdate = Recipe.findById(recipeId.longValue());
+        if (recipeToUpdate == null) {
             return Results.notFound();
         }
 
-        //Validate the new title
-        RecipeTitleValidator recipeTitleValidator = new RecipeTitleValidator();
-        if (!recipeTitleValidator.isValid(newTitle)) {
-            String errorMsg = Http.Context.current().messages().at("unique-recipe-title");
-            return Results.badRequest(errorMsg);
+        Form<Recipe> recipeForm = formFactory.form(Recipe.class).bindFromRequest();
+
+        // Check if the form contains errors
+        if (recipeForm.hasErrors()) {
+            return Results.badRequest(Json.toJson(recipeForm.errorsAsJson()));
         }
 
-        recipe.setTitle(newTitle);
-        recipe.update();
+        Recipe recipeData = recipeForm.get();
+
+        recipeToUpdate.setTitle(recipeData.getTitle());
+        recipeToUpdate.setDescription(recipeData.getDescription());
+        recipeToUpdate.setServes(recipeData.getServes());
+        recipeToUpdate.setPreparationTime(recipeData.getPreparationTime());
+        recipeToUpdate.setIngredients(getIngredients(recipeData.getIngredients()));
+        recipeToUpdate.setSteps(recipeData.getSteps());
+        recipeToUpdate.setCategories(getCategories(recipeData.getCategories()));
+        recipeToUpdate.setNutritionalData(recipeData.getNutritionalData());
+        recipeToUpdate.update();
 
         //Update recipe to the cache
-        cache.set("recipe-" + recipeId, recipe);
+        cache.set("recipe-" + recipeId, recipeToUpdate);
 
         // Remove recipes from the cache, because the content has changed
         cache.remove("recipes");
 
-        return contentNegotiationRecipe(recipe);
+        return contentNegotiationRecipe(recipeToUpdate);
     }
 
     /**
