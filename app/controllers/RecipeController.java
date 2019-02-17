@@ -9,10 +9,8 @@ import play.data.FormFactory;
 import play.db.ebean.Transactional;
 import play.libs.Json;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
-import validators.RecipeTitleValidator;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -134,7 +132,7 @@ public class RecipeController extends Controller {
         }
 
         Recipe recipeData = recipeForm.get();
-
+        //Update recipe data
         recipeToUpdate.setTitle(recipeData.getTitle());
         recipeToUpdate.setDescription(recipeData.getDescription());
         recipeToUpdate.setServes(recipeData.getServes());
