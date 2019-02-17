@@ -1,5 +1,13 @@
 # Recipe Manger
 
+**Authentication**
+----
+To use this API you need the "Authentication" header with the token: 
+
+  ```
+  VYpL501h7NNg4lzUmW54kXGgRamZh7FihnoRIa
+  ```
+  
 **Get recipes**
 ----
   Returns the list of recipes.
